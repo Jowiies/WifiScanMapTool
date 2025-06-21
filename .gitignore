@@ -7,10 +7,10 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
-toJson/.venv
 .DS_Store
 /build
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+toJson/.venv
