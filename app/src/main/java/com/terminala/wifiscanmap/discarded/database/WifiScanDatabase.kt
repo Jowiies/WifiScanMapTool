@@ -1,4 +1,4 @@
-package com.terminala.wifiscanmap.database
+package com.terminala.wifiscanmap.discarded.database
 
 import android.content.Context
 import android.util.Log
@@ -6,9 +6,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.terminala.wifiscanmap.database.dao.ScanDao
-import com.terminala.wifiscanmap.database.entitites.ScanLocation
-import com.terminala.wifiscanmap.database.entitites.WifiMeasurement
+import com.terminala.wifiscanmap.discarded.database.dao.ScanDao
+import com.terminala.wifiscanmap.discarded.database.entitites.ScanLocation
+import com.terminala.wifiscanmap.discarded.database.entitites.WifiMeasurement
 
 @Database(
     entities = [ScanLocation::class, WifiMeasurement::class],

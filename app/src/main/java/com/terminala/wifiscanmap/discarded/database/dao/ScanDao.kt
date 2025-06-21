@@ -1,11 +1,11 @@
-package com.terminala.wifiscanmap.database.dao
+package com.terminala.wifiscanmap.discarded.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
-import com.terminala.wifiscanmap.database.entitites.ScanLocation
-import com.terminala.wifiscanmap.database.entitites.WifiMeasurement
+import com.terminala.wifiscanmap.discarded.database.entitites.ScanLocation
+import com.terminala.wifiscanmap.discarded.database.entitites.WifiMeasurement
 import kotlinx.coroutines.flow.Flow
 
 @Dao

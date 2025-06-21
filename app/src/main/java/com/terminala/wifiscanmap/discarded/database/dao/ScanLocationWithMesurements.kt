@@ -1,9 +1,9 @@
-package com.terminala.wifiscanmap.database.dao
+package com.terminala.wifiscanmap.discarded.database.dao
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.terminala.wifiscanmap.database.entitites.ScanLocation
-import com.terminala.wifiscanmap.database.entitites.WifiMeasurement
+import com.terminala.wifiscanmap.discarded.database.entitites.ScanLocation
+import com.terminala.wifiscanmap.discarded.database.entitites.WifiMeasurement
 
 data class ScanLocationWithMeasurements(
     @Embedded val location: ScanLocation,

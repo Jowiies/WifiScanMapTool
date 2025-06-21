@@ -1,9 +1,9 @@
-package com.terminala.wifiscanmap.database
+package com.terminala.wifiscanmap.discarded.database
 
 import android.net.wifi.ScanResult
-import com.terminala.wifiscanmap.database.dao.ScanDao
-import com.terminala.wifiscanmap.database.entitites.ScanLocation
-import com.terminala.wifiscanmap.database.entitites.WifiMeasurement
+import com.terminala.wifiscanmap.discarded.database.dao.ScanDao
+import com.terminala.wifiscanmap.discarded.database.entitites.ScanLocation
+import com.terminala.wifiscanmap.discarded.database.entitites.WifiMeasurement
 
 class WifiScanRepository(private val scanDao: ScanDao) {
     suspend fun saveScan(normalizedX: Double, normalizedY: Double, scanResults: List<ScanResult>) {

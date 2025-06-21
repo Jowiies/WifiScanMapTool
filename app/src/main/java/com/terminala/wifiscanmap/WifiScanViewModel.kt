@@ -2,32 +2,49 @@ package com.terminala.wifiscanmap
 
 import android.app.Application
 import android.net.wifi.ScanResult
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.terminala.wifiscanmap.database.WifiScanDatabase
-import com.terminala.wifiscanmap.database.WifiScanRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class WifiScanViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository: WifiScanRepository
+    private val fileManager = ScanFileManager(application)
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
-    init {
-        val database = WifiScanDatabase.getDatabase(application)
-        repository = WifiScanRepository(database.scanDao())
-    }
+    fun saveScan(x: Double, y: Double, scanResults: List<ScanResult>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val scanData = WifiScanData(
+                    coordinates = WifiScanData.Coordinates(x, y),
+                    timestamp = System.currentTimeMillis(),
+                    measurements = scanResults.map {
+                        WifiScanData.WifiMeasurement(
+                            bssid = it.BSSID.replace(":",""),
+                            rssi = it.level,
+                        )
+                    }
+                )
 
-    fun saveScan(normalizedX: Double, normalizedY: Double, scanResults: List<ScanResult>) {
-        viewModelScope.launch {
-            repository.saveScan(normalizedX, normalizedY, scanResults)
+                val fileName = fileManager.saveScan(scanData)
+                Log.d("ScanSave", "Scan saved to $fileName")
+            } catch (e: Exception) {
+                Log.e("ScanSave", "Failed to save scan", e)
+            }
         }
     }
 
-    class Factory(private val application: Application) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return WifiScanViewModel(application) as T
+    fun getFormattedScanList(): List<String> {
+        return fileManager.getScanFiles().mapNotNull { fileName ->
+            fileManager.getScan(fileName)?.let { scan ->
+                "Scan at ${dateFormat.format(Date(scan.timestamp))} - " +
+                        "${scan.measurements.size} networks at " +
+                        "(${String.format("%.2f", scan.coordinates.x)}, " +
+                        "${String.format("%.2f", scan.coordinates.y)})"
+            }
         }
     }
 }

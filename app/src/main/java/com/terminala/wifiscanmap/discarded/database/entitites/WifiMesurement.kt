@@ -1,4 +1,4 @@
-package com.terminala.wifiscanmap.database.entitites
+package com.terminala.wifiscanmap.discarded.database.entitites
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

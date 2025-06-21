@@ -1,7 +1,6 @@
 package com.terminala.wifiscanmap
 
 import android.Manifest
-import android.app.Application
 import android.content.*
 import android.content.pm.PackageManager
 import android.net.wifi.ScanResult
@@ -42,7 +41,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun WifiTapMap(
     imageRes: Int,
-    viewModel: WifiScanViewModel = viewModel(factory = WifiScanViewModel.Factory(LocalContext.current.applicationContext as Application)),
+    viewModel: WifiScanViewModel = viewModel(),
     context: Context = LocalContext.current
 ) {
     val imageSizePx = IntSize(3850, 2569)
@@ -64,7 +63,6 @@ fun WifiTapMap(
 
     val scanSuccessState = remember { mutableStateOf<Boolean?>(null) }
 
-    // Request location permission
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -79,7 +77,6 @@ fun WifiTapMap(
         locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
-    // Register scan result receiver
     DisposableEffect(Unit) {
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(ctx: Context?, intent: Intent?) {
@@ -95,7 +92,6 @@ fun WifiTapMap(
 
                 if (success) {
                     val results = wifiManager.scanResults
-                    // Post results to Compose state safely
                     scanResultsState.clear()
                     scanResultsState.addAll(results)
                     scanSuccessState.value = true
