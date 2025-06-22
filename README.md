@@ -20,6 +20,3 @@ This Android app allows you to tap on a map image to log locations and perform W
 1. Grant location permission when prompted  
 2. Tap on the map to select the desired location 
 3. Use the scan button to scan the selected location
-
-Created by [Joel Esteller]
-
