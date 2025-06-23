@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId = "com.terminala.wifiscanmap"
         minSdk = 33
-        targetSdk = 35
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 

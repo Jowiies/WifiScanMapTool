@@ -10,6 +10,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
@@ -30,12 +31,14 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.draw.clip
 import kotlinx.coroutines.launch
 
 @Composable
@@ -56,6 +59,7 @@ fun WifiTapMap(
     val scanResultsState = remember { mutableStateListOf<ScanResult>() }
     var isScanning by remember { mutableStateOf(false)}
     var hasLocationSet by remember { mutableStateOf(false)}
+    var scanncount by remember { mutableIntStateOf(0) }
 
     val wifiManager = remember {
         context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -105,7 +109,7 @@ fun WifiTapMap(
                             ).show()
                         }
                     }
-                    Toast.makeText(appCtx, "Scan successful (${results.size} networks)", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(appCtx, "Scan successful (${results.size} networks)", Toast.LENGTH_SHORT).show()
                 } else {
                     scanSuccessState.value = false
                     Toast.makeText(appCtx, "Scan failed", Toast.LENGTH_SHORT).show()
@@ -151,7 +155,7 @@ fun WifiTapMap(
                         lastNormX = normX
                         lastNormY = normY
                         hasLocationSet = true
-                        Toast.makeText(context, "Normalized pos: x=%.2f, y=%.2f".format(normX, normY), Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(context, "Normalized pos: x=%.2f, y=%.2f".format(normX, normY), Toast.LENGTH_SHORT).show()
                     }
                 }
         ) {
@@ -211,6 +215,7 @@ fun WifiTapMap(
                         if (!started) {
                             Toast.makeText(context, "Failed to start Wi-Fi scan", Toast.LENGTH_SHORT).show()
                         } else {
+                            scanncount++
                             isScanning = true
                         }
                     }
@@ -233,6 +238,20 @@ fun WifiTapMap(
             else {
                 Text("Scan and Save")
             }
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+                .background(Color.DarkGray)
+                .clip(RoundedCornerShape(16.dp))
+        )
+        {
+            Text(
+                color = Color.White,
+                text = "Total Scans: $scanncount"
+            )
         }
     }
 }
