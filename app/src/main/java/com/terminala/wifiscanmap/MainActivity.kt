@@ -12,7 +12,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WifiScanMapTheme {
-                WifiTapMap(imageRes = R.drawable.planol)
+                WifiScanMap(imageRes = R.drawable.planol)
             }
         }
     }

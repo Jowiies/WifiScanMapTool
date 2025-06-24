@@ -32,17 +32,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.VerticalDivider
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.draw.clip
 import kotlinx.coroutines.launch
 
 @Composable
-fun WifiTapMap(
+fun WifiScanMap(
     imageRes: Int,
     viewModel: WifiScanViewModel = viewModel(),
     context: Context = LocalContext.current
@@ -59,7 +66,7 @@ fun WifiTapMap(
     val scanResultsState = remember { mutableStateListOf<ScanResult>() }
     var isScanning by remember { mutableStateOf(false)}
     var hasLocationSet by remember { mutableStateOf(false)}
-    var scanncount by remember { mutableIntStateOf(0) }
+    var scanncount by rememberSaveable { mutableIntStateOf(0) }
 
     val wifiManager = remember {
         context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -102,11 +109,12 @@ fun WifiTapMap(
                     if (hasLocationSet) {
                         coroutineScope.launch {
                             viewModel.saveScan(lastNormX.toDouble(), lastNormY.toDouble(), results)
-                            Toast.makeText(
+                            scanncount++
+                            /*Toast.makeText(
                                 context,
                                 "Scan saved at x=%.2f, y=%.2f with ${results.size} networks".format(lastNormX, lastNormY),
                                 Toast.LENGTH_SHORT
-                            ).show()
+                            ).show()*/
                         }
                     }
                     //Toast.makeText(appCtx, "Scan successful (${results.size} networks)", Toast.LENGTH_SHORT).show()
@@ -192,7 +200,6 @@ fun WifiTapMap(
             }
         }
 
-        // Reset Button
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.DarkGray,
@@ -213,45 +220,79 @@ fun WifiTapMap(
                     } else {
                         val started = wifiManager.startScan()
                         if (!started) {
-                            Toast.makeText(context, "Failed to start Wi-Fi scan", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Failed to start Wi-Fi scan",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } else {
-                            scanncount++
                             isScanning = true
                         }
                     }
                 } else {
-                    Toast.makeText(context, "Location permission required to scan Wi-Fi", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Location permission required to scan Wi-Fi",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             },
             enabled = !isScanning,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(16.dp)
+                .size(72.dp)
+                .clip(CircleShape)
         ) {
             if (isScanning) {
-                CircularProgressIndicator(
-                    color = Color.White,
-                    strokeWidth = 2.dp,
-                    modifier = Modifier.size(16.dp)
-                )
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(24.dp) // optional: control indicator size
+                    )
+                }
             }
             else {
-                Text("Scan and Save")
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "save",
+                )
             }
         }
 
-        Box(
+        Row(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(16.dp)
+                .padding(WindowInsets.safeDrawing.asPaddingValues())
+                .clip(MaterialTheme.shapes.extraLarge)
                 .background(Color.DarkGray)
-                .clip(RoundedCornerShape(16.dp))
+                .padding(10.dp)
         )
         {
             Text(
                 color = Color.White,
-                text = "Total Scans: $scanncount"
+                text = "Coords: $lastNormX, $lastNormY",
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(8.dp)
             )
+            VerticalDivider(
+                modifier = Modifier
+                    .height(32.dp)
+                    .width(1.dp)
+                    .background(Color.LightGray)
+                    .padding(horizontal = 8.dp)
+            )
+            Text(
+                color = Color.White,
+                text = "Total Scans: $scanncount",
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(8.dp)
+            )
+
         }
     }
 }
